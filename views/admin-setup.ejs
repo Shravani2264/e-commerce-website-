@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Setup — Silly Lillies</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-900 flex items-center justify-center">
+
+    <div class="w-full max-w-md px-6">
+        <div class="text-center mb-8">
+            <span class="text-4xl">🛍️</span>
+            <h1 class="text-2xl font-bold text-white mt-2">Silly Lillies</h1>
+            <p class="text-yellow-400 text-sm mt-1 font-semibold">First-Time Admin Setup</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-2xl p-8">
+            <h2 class="text-xl font-bold text-gray-800 mb-1">Create Admin Account</h2>
+            <p class="text-sm text-gray-400 mb-6">This page is only available once, before any admin is created.</p>
+
+            <% if (error && error.length > 0) { %>
+                <div class="mb-4 bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">
+                    <%= error[0] %>
+                </div>
+            <% } %>
+
+            <form action="/owners/setup" method="POST" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <input type="text" name="fullname" required placeholder="Your name"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <input type="email" name="email" required placeholder="admin@example.com"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" name="password" required placeholder="Min 6 characters" minlength="6"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg transition flex items-center justify-center gap-2 mt-2">
+                    <i class="ri-shield-user-line"></i> Create Admin Account
+                </button>
+            </form>
+        </div>
+
+        <p class="text-center text-xs text-gray-600 mt-4">
+            Already have an account? <a href="/owners/login" class="text-indigo-400 hover:underline">Login →</a>
+        </p>
+    </div>
+
+</body>
+</html>

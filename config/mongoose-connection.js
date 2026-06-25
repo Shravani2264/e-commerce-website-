@@ -1,10 +1,13 @@
 const mongoose = require('mongoose');
 const dbgr = require("debug")("development:mongoose");
 const config = require("config");
+
+const uri = process.env.MONGODB_URI || config.get("MONGODB_URI");
+
 mongoose
-.connect(`${config.get("MONGODB_URI")}/sillylillies`)
+.connect(`${uri}/sillylillies`)
 .then(function(){
-    dbgr("connected");
+    dbgr("connected to MongoDB at " + uri);
 })
 .catch(function(err){
     console.log(err);

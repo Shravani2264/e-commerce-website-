@@ -12,12 +12,17 @@ const userSchema = mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref: "product",
     }],
-    order : {
-        type : Array,
-        default: []
-    },
+    orders : [{
+        type : mongoose.Schema.Types.ObjectId,
+        ref: "order",
+    }],
+    wishlist : [{
+        type : mongoose.Schema.Types.ObjectId,
+        ref: "product",
+    }],
     contact : Number,
     picture : String,
+    address : String,
 });
 
 module.exports = mongoose.model("user", userSchema);

@@ -4,24 +4,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Silly Lillies - Shop Trendy Bags & Accessories</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 
-<body class="font-['helvetica_now_display'] ">
-    <nav class="w-full flex justify-between px-5 py-3">
-        <h3 class="text-xl text-red-400 ">Silly Lillies</h3>
-        <% var loggedin=typeof loggedin !=="undefined" ? loggedin : true %>
+<body class="font-['helvetica_now_display'] bg-gray-50">
+    <nav class="w-full sticky top-0 z-50">
+        <div class="flex justify-between items-center px-6 py-4 bg-white border-b border-gray-100">
+            <a href="/" class="logo text-2xl font-bold">
+                🌸 Silly Lillies
+            </a>
+            
+            <% var loggedin=typeof loggedin !=="undefined" ? loggedin : true %>
             <% if(loggedin){ %>
-                <div class="flex gap-5 ">
-                    <a href="/shop">shop</a>
-                    <a href="/cart">cart</a>
-                    <a href="">My Account</a>
-                    <a class="text-red-600 " href="/users/logout">logout</a>
-
-
+                <div class="search-bar hidden md:flex">
+                    <form action="/shop" method="get" class="flex w-full">
+                        <input 
+                            type="text" 
+                            name="search" 
+                            placeholder="Search bags, accessories..." 
+                            class="search-input"
+                            value="<%= typeof search !== 'undefined' ? search : '' %>"
+                        >
+                        <button type="submit" class="px-4 text-gray-500 hover:text-red-400">
+                            <i class="ri-search-line text-lg"></i>
+                        </button>
+                    </form>
                 </div>
-                <% } %>
 
+                <div class="flex items-center gap-8">
+                    <a href="/shop" class="nav-link">
+                        <i class="ri-shopping-bag-line text-lg"></i> Shop
+                    </a>
+                    <a href="/cart" class="nav-link relative">
+                        <i class="ri-shopping-cart-line text-lg"></i> Cart
+                        <% if (locals.cartCount > 0) { %>
+                            <span class="absolute -top-2 -right-3 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold"><%= locals.cartCount %></span>
+                        <% } %>
+                    </a>
+                    <div class="relative group">
+                        <button class="nav-link flex items-center gap-1">
+                            <i class="ri-user-line text-lg"></i> Account
+                            <i class="ri-arrow-down-s-line text-sm"></i>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 border border-gray-100">
+                            <a href="/users/profile" class="block px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-500">My Profile</a>
+                            <a href="/users/orders" class="block px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-500">My Orders</a>
+                            <a href="/users/wishlist" class="block px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-500">Wishlist</a>
+                            <hr class="my-2">
+                            <a href="/users/logout" class="block px-4 py-2 text-red-500 hover:bg-red-50 font-semibold">Logout</a>
+                        </div>
+                    </div>
+                    <a href="/users/logout" class="text-red-500 font-semibold hover:text-red-600 hidden">
+                        <i class="ri-logout-box-line"></i> Logout
+                    </a>
+                </div>
+            <% } %>
+        </div>
     </nav>

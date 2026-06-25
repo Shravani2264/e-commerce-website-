@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard — Silly Lillies</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside class="w-56 bg-gray-900 text-white flex flex-col min-h-screen fixed left-0 top-0 z-40">
+        <div class="px-6 py-5 border-b border-gray-700">
+            <span class="text-xl font-bold flex items-center gap-2">🛍️ Silly Lillies</span>
+            <p class="text-xs text-gray-400 mt-1">Admin Panel</p>
+        </div>
+        <nav class="flex-1 px-4 py-4 space-y-1">
+            <a href="/owners/admin" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium">
+                <i class="ri-dashboard-line"></i> Dashboard
+            </a>
+            <a href="/owners/admin/products/add" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-800 text-gray-300 text-sm transition">
+                <i class="ri-add-box-line"></i> Add Product
+            </a>
+            <hr class="border-gray-700 my-3">
+            <a href="/shop" target="_blank" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-800 text-gray-300 text-sm transition">
+                <i class="ri-store-line"></i> View Store
+            </a>
+            <a href="/owners/logout" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-900 text-red-400 text-sm transition mt-auto">
+                <i class="ri-logout-box-line"></i> Logout
+            </a>
+        </nav>
+        <div class="px-6 py-4 border-t border-gray-700 text-xs text-gray-500">
+            Logged in as <span class="text-gray-300"><%= adminName %></span>
+        </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="ml-56 flex-1 p-8">
+
+        <!-- Flash Messages -->
+        <% if (success && success.length > 0) { %>
+            <div class="mb-4 bg-green-50 border border-green-200 text-green-800 rounded-lg px-4 py-3 flex items-center gap-2 text-sm">
+                <i class="ri-checkbox-circle-line text-green-500 text-base"></i> <%= success[0] %>
+            </div>
+        <% } %>
+        <% if (error && error.length > 0) { %>
+            <div class="mb-4 bg-red-50 border border-red-200 text-red-800 rounded-lg px-4 py-3 flex items-center gap-2 text-sm">
+                <i class="ri-error-warning-line text-red-500 text-base"></i> <%= error[0] %>
+            </div>
+        <% } %>
+
+        <div class="flex items-center justify-between mb-8">
+            <h1 class="text-2xl font-bold text-gray-800">Dashboard</h1>
+            <a href="/owners/admin/products/add"
+               class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg flex items-center gap-2 transition">
+                <i class="ri-add-line"></i> Add Product
+            </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-xl p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-sm text-gray-500">Products</p>
+                    <div class="w-9 h-9 bg-indigo-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-shopping-bag-line text-indigo-600"></i>
+                    </div>
+                </div>
+                <p class="text-3xl font-bold text-gray-800"><%= products.length %></p>
+            </div>
+            <div class="bg-white rounded-xl p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-sm text-gray-500">Orders</p>
+                    <div class="w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-file-list-3-line text-green-600"></i>
+                    </div>
+                </div>
+                <p class="text-3xl font-bold text-gray-800"><%= orders.length %></p>
+            </div>
+            <div class="bg-white rounded-xl p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-sm text-gray-500">Customers</p>
+                    <div class="w-9 h-9 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-user-line text-yellow-600"></i>
+                    </div>
+                </div>
+                <p class="text-3xl font-bold text-gray-800"><%= users.length %></p>
+            </div>
+            <div class="bg-white rounded-xl p-5 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-sm text-gray-500">Revenue</p>
+                    <div class="w-9 h-9 bg-red-100 rounded-lg flex items-center justify-center">
+                        <i class="ri-money-rupee-circle-line text-red-500"></i>
+                    </div>
+                </div>
+                <p class="text-3xl font-bold text-gray-800">₹<%= totalRevenue %></p>
+            </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                <h2 class="font-bold text-gray-800">All Products</h2>
+                <span class="text-sm text-gray-400"><%= products.length %> items</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
+                        <tr>
+                            <th class="px-6 py-3 text-left">Product</th>
+                            <th class="px-6 py-3 text-left">Price</th>
+                            <th class="px-6 py-3 text-left">Discount</th>
+                            <th class="px-6 py-3 text-left">Colors</th>
+                            <th class="px-6 py-3 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        <% if (products.length === 0) { %>
+                            <tr>
+                                <td colspan="5" class="px-6 py-10 text-center text-gray-400">
+                                    No products yet. <a href="/owners/admin/products/add" class="text-indigo-600 hover:underline">Add one →</a>
+                                </td>
+                            </tr>
+                        <% } %>
+                        <% products.forEach(function(p) { %>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden"
+                                             style="background: <%= p.bgcolor || '#f3f4f6' %>">
+                                            <% if (p.imagePath) { %>
+                                                <img src="<%= p.imagePath %>" class="h-full w-full object-contain">
+                                            <% } else if (p.image) { %>
+                                                <img src="data:image/jpeg;base64,<%= p.image.toString('base64') %>" class="h-full w-full object-contain">
+                                            <% } else { %>
+                                                <span class="text-xl">🛍️</span>
+                                            <% } %>
+                                        </div>
+                                        <span class="font-medium text-gray-800"><%= p.name %></span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 font-semibold text-gray-700">₹<%= p.price %></td>
+                                <td class="px-6 py-4">
+                                    <% if (p.Discount > 0) { %>
+                                        <span class="bg-green-100 text-green-700 text-xs font-semibold px-2 py-0.5 rounded-full">₹<%= p.Discount %> off</span>
+                                    <% } else { %>
+                                        <span class="text-gray-400">—</span>
+                                    <% } %>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-1.5">
+                                        <div class="w-5 h-5 rounded border border-gray-200" style="background:<%= p.bgcolor %>" title="BG"></div>
+                                        <div class="w-5 h-5 rounded border border-gray-200" style="background:<%= p.panelcolor %>" title="Panel"></div>
+                                        <div class="w-5 h-5 rounded border border-gray-200" style="background:<%= p.textcolor %>" title="Text"></div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <a href="/owners/admin/products/edit/<%= p._id %>"
+                                           class="text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1">
+                                            <i class="ri-edit-line"></i> Edit
+                                        </a>
+                                        <a href="/owners/admin/products/delete/<%= p._id %>"
+                                           onclick="return confirm('Delete <%= p.name %>?')"
+                                           class="text-red-500 hover:text-red-700 font-medium flex items-center gap-1">
+                                            <i class="ri-delete-bin-line"></i> Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100">
+                <h2 class="font-bold text-gray-800">Recent Orders</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
+                        <tr>
+                            <th class="px-6 py-3 text-left">Order ID</th>
+                            <th class="px-6 py-3 text-left">Customer</th>
+                            <th class="px-6 py-3 text-left">Items</th>
+                            <th class="px-6 py-3 text-left">Total</th>
+                            <th class="px-6 py-3 text-left">Status</th>
+                            <th class="px-6 py-3 text-left">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        <% if (orders.length === 0) { %>
+                            <tr><td colspan="6" class="px-6 py-10 text-center text-gray-400">No orders yet</td></tr>
+                        <% } %>
+                        <% orders.forEach(function(o) { %>
+                            <%
+                            const statusColors = {
+                                pending:    'bg-yellow-100 text-yellow-700',
+                                processing: 'bg-blue-100 text-blue-700',
+                                shipped:    'bg-purple-100 text-purple-700',
+                                delivered:  'bg-green-100 text-green-700',
+                                cancelled:  'bg-red-100 text-red-700'
+                            };
+                            %>
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-6 py-3 font-mono text-gray-600">#<%= o._id.toString().slice(-8).toUpperCase() %></td>
+                                <td class="px-6 py-3 text-gray-700"><%= o.user ? o.user.fullname : 'Unknown' %></td>
+                                <td class="px-6 py-3 text-gray-500"><%= o.products.length %> item(s)</td>
+                                <td class="px-6 py-3 font-semibold text-gray-800">₹<%= o.total %></td>
+                                <td class="px-6 py-3">
+                                    <span class="text-xs font-semibold px-2 py-0.5 rounded-full capitalize <%= statusColors[o.status] || 'bg-gray-100 text-gray-600' %>">
+                                        <%= o.status %>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-3 text-gray-400 text-xs">
+                                    <%= new Date(o.createdAt).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

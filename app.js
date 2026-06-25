@@ -7,7 +7,12 @@ const path = require("path");
 const expressSession = require("express-session");
 const flash = require("connect-flash");
 
-const db = require("./config/mongoose-connection");
+if (process.env.NODE_ENV !== "test") {
+    require("./config/mongoose-connection");
+}
+
+const jwt = require("jsonwebtoken");
+const userModel = require("./models/user-model");
 
 const owners = require("./routes/ownersRouter");
 const users = require("./routes/usersRouter");
@@ -29,10 +34,18 @@ app.use(
 app.use(flash());
 
 
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
     res.locals.success_msg = req.flash("success_msg");
     res.locals.error_msg = req.flash("error_msg");
     res.locals.error = req.flash("error");
+    res.locals.cartCount = 0;
+    if (req.cookies.token) {
+        try {
+            const decoded = jwt.verify(req.cookies.token, process.env.JWT_KEY);
+            const u = await userModel.findOne({ email: decoded.email }).select("cart");
+            res.locals.cartCount = u ? u.cart.length : 0;
+        } catch (_) {}
+    }
     next();
 });
 
@@ -45,6 +58,11 @@ app.use("/owners", owners);
 app.use("/users", users);
 app.use("/products", products);
 
-app.listen(3000, () => {
-    console.log("Server started on http://localhost:3000");
-});
+const PORT = process.env.PORT || 3000;
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server started on http://localhost:${PORT}`);
+    });
+}
+
+module.exports = app;

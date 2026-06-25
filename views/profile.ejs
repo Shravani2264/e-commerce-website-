@@ -1,0 +1,132 @@
+<%- include('./partials/header') %>
+
+<div class="max-w-3xl mx-auto px-6 py-12">
+    <h1 class="text-3xl font-bold mb-8 text-gray-800">My Profile</h1>
+
+    <% if (success && success.length > 0) { %>
+        <div class="mb-6 bg-green-50 border border-green-200 text-green-800 rounded-lg px-4 py-3 flex items-center gap-2">
+            <i class="ri-checkbox-circle-line text-green-500 text-xl"></i>
+            <span><%= success[0] %></span>
+        </div>
+    <% } %>
+    <% if (error && error.length > 0) { %>
+        <div class="mb-6 bg-red-50 border border-red-200 text-red-800 rounded-lg px-4 py-3 flex items-center gap-2">
+            <i class="ri-error-warning-line text-red-500 text-xl"></i>
+            <span><%= error[0] %></span>
+        </div>
+    <% } %>
+
+    <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+        <!-- Profile Header -->
+        <div class="bg-gradient-to-r from-red-500 to-orange-400 px-8 py-10 flex items-center gap-6">
+            <div class="w-20 h-20 rounded-full bg-white flex items-center justify-center text-4xl shadow-md">
+                🛍️
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold text-white"><%= user.fullname || "User" %></h2>
+                <p class="text-red-100 mt-1"><%= user.email %></p>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="grid grid-cols-3 divide-x divide-gray-100 border-b border-gray-100">
+            <a href="/users/orders" class="flex flex-col items-center py-5 hover:bg-gray-50 transition">
+                <span class="text-2xl font-bold text-red-500"><%= user.orders ? user.orders.length : 0 %></span>
+                <span class="text-sm text-gray-500 mt-1">Orders</span>
+            </a>
+            <a href="/users/wishlist" class="flex flex-col items-center py-5 hover:bg-gray-50 transition">
+                <span class="text-2xl font-bold text-red-500"><%= user.wishlist ? user.wishlist.length : 0 %></span>
+                <span class="text-sm text-gray-500 mt-1">Wishlist</span>
+            </a>
+            <a href="/cart" class="flex flex-col items-center py-5 hover:bg-gray-50 transition">
+                <span class="text-2xl font-bold text-red-500"><%= user.cart ? user.cart.length : 0 %></span>
+                <span class="text-sm text-gray-500 mt-1">In Cart</span>
+            </a>
+        </div>
+
+        <!-- Edit Form -->
+        <form action="/users/profile/update" method="POST" class="p-8 space-y-6">
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">Edit Details</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <input
+                        type="text"
+                        name="fullname"
+                        value="<%= user.fullname || '' %>"
+                        placeholder="Your full name"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent"
+                    >
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input
+                        type="email"
+                        value="<%= user.email %>"
+                        disabled
+                        class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-400 cursor-not-allowed"
+                    >
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                    <input
+                        type="tel"
+                        name="contact"
+                        value="<%= user.contact || '' %>"
+                        placeholder="e.g. 9876543210"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent"
+                    >
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Address</label>
+                    <input
+                        type="text"
+                        name="address"
+                        value="<%= user.address || '' %>"
+                        placeholder="Your delivery address"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent"
+                    >
+                </div>
+            </div>
+
+            <div class="flex gap-4 pt-2">
+                <button type="submit" class="bg-gradient-to-r from-red-500 to-orange-400 text-white font-semibold px-8 py-2.5 rounded-lg hover:shadow-md transition-shadow">
+                    Save Changes
+                </button>
+                <a href="/shop" class="border border-gray-300 text-gray-600 font-semibold px-8 py-2.5 rounded-lg hover:bg-gray-50 transition">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="mt-6 grid grid-cols-2 gap-4">
+        <a href="/users/orders" class="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4 hover:shadow-md transition group">
+            <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-2xl group-hover:bg-red-100 transition">
+                📦
+            </div>
+            <div>
+                <p class="font-semibold text-gray-800">My Orders</p>
+                <p class="text-sm text-gray-500">Track & view orders</p>
+            </div>
+            <i class="ri-arrow-right-s-line ml-auto text-gray-400 group-hover:text-red-500 transition"></i>
+        </a>
+        <a href="/users/wishlist" class="bg-white rounded-xl shadow-sm p-5 flex items-center gap-4 hover:shadow-md transition group">
+            <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-2xl group-hover:bg-red-100 transition">
+                ❤️
+            </div>
+            <div>
+                <p class="font-semibold text-gray-800">Wishlist</p>
+                <p class="text-sm text-gray-500">Saved items</p>
+            </div>
+            <i class="ri-arrow-right-s-line ml-auto text-gray-400 group-hover:text-red-500 transition"></i>
+        </a>
+    </div>
+</div>
+
+<%- include('./partials/footer') %>

@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/user-model");
-const { NEXT_BODY_SUFFIX } = require("next/dist/lib/constants");
 
 module.exports = async function name(req, res, next) {
     if(!req.cookies.token){
